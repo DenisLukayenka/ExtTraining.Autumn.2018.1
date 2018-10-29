@@ -9,6 +9,8 @@ namespace StringExtension
 {
     public static class Parser
     {
+        private static string _possibleSymbols = "0123456789ABCDEF";
+
         public static int ToDecimal(this string source, int @base)
         {
             CheckArguments(source, @base);
@@ -20,40 +22,16 @@ namespace StringExtension
             {
                 if (answer < 0)
                 {
-                    throw new OverflowException();
+                    throw new ArgumentException();
                 }
 
-                int numberOfSymbol = GetValueSymbol(symbol);
+                int numberOfSymbol = _possibleSymbols.IndexOf(symbol);
                 int tempNumber = numberOfSymbol * (int)Math.Pow(@base, lenght--);
 
                 answer += tempNumber;
             }
 
             return answer;
-        }
-
-        private static int GetValueSymbol(char symbol)
-        {
-            Dictionary<char, int> numbers = new Dictionary<char, int>
-            {
-                { '0', 0 },
-                { '1', 1 },
-                { '2', 2 },
-                { '3', 3 },
-                { '4', 4 },
-                { '5', 5 },
-                { '6', 6 },
-                { '7', 7 },
-                { '8', 8 },
-                { '9', 9 },
-                { 'A', 10 },
-                { 'B', 11 },
-                { 'C', 12 },
-                { 'D', 13 },
-                { 'E', 14 },
-                { 'F', 15 }
-            };
-            return numbers[symbol];
         }
 
         private static void CheckArguments(string source, int @base)
@@ -95,13 +73,11 @@ namespace StringExtension
         }
 
         private static bool IsCurrectSymbol(char symbol, int index)
-        {
-            string arraySymbols = "0123456789ABCDEF";
-
+        {  
             bool flag = false;
             for (int i = 0; i < index; i++)
             {
-                if (symbol == arraySymbols[i])
+                if (symbol == _possibleSymbols[i])
                 {
                     flag = true;
                     break;
