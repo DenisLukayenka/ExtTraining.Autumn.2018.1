@@ -60,6 +60,7 @@ namespace BookLibrary
             switch (format.ToUpper())
             {
                 case "G":
+                    return $"Book record: {Title}, {Price.ToString("C2", formatProvider)}";
                 case "A":
                     return $"Book record: {Author}, {Title}, {Year}, {PublishingHouse}";
                 case "B":
