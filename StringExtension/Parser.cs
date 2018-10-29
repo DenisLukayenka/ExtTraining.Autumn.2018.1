@@ -13,26 +13,20 @@ namespace StringExtension
         {
             CheckArguments(source, @base);
 
-
-
-            return Convert(source, @base);
-        }
-
-        private static int Convert(string source, int @base)
-        {
             int lenght = source.Length - 1;
             int answer = 0;
 
             foreach (var symbol in source.ToUpper())
             {
-                int number = GetValueSymbol(symbol);
-                int num = number * (int)Math.Pow(@base, lenght--);
-
-                answer += num;
                 if (answer < 0)
                 {
                     throw new OverflowException();
                 }
+
+                int numberOfSymbol = GetValueSymbol(symbol);
+                int tempNumber = numberOfSymbol * (int)Math.Pow(@base, lenght--);
+
+                answer += tempNumber;
             }
 
             return answer;
@@ -105,7 +99,7 @@ namespace StringExtension
             string arraySymbols = "0123456789ABCDEF";
 
             bool flag = false;
-            for (int i = 0; i <= index; i++)
+            for (int i = 0; i < index; i++)
             {
                 if (symbol == arraySymbols[i])
                 {
