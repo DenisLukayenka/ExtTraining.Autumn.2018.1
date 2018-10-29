@@ -16,11 +16,17 @@ namespace BookLibrary
         /// Simple auto properties for parameters of book.
         /// </summary>
         public string Title { get; set; }
+
         public string Author { get; set; }
+
         public int Year { get; set; }
+
         public string PublishingHouse { get; set; }
+
         public int Edition { get; set; }
+
         public int Pages { get; set; }
+
         public decimal Price { get; set; }
 
         /// <summary>
@@ -65,7 +71,8 @@ namespace BookLibrary
                 case "E":
                     return $"Book record: {Title}, {PublishingHouse}";
                 case "F":
-                    return $"Book record: {Author}, {Title}, {Year}, {PublishingHouse}, ed.{Edition}, p.{Pages}, {Price:C2}";
+                    return $"Book record: {Author}, {Title}, {Year}, {PublishingHouse}, ed.{Edition}, p.{Pages}, {Price.ToString("C2", formatProvider)}";
+
                 default:
                     throw new FormatException(nameof(format) + " is invalid format.");
             }

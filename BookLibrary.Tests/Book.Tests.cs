@@ -10,7 +10,7 @@ using static BookLibrary.Book;
 namespace BookLibrary.Tests
 {
     [TestFixture]
-    public class Class1
+    public class Tester
     {
         private Book book = new Book()
         {
@@ -28,14 +28,18 @@ namespace BookLibrary.Tests
         [TestCase("C", ExpectedResult = "Book record: Jon Skeet, C# in Depth")]
         [TestCase("D", ExpectedResult = "Book record: C# in Depth, 2019, Manning")]
         [TestCase("E", ExpectedResult = "Book record: C# in Depth, Manning")]
-        [TestCase("F", ExpectedResult = "Book record: Jon Skeet, C# in Depth, 2019, Manning, ed.4, p.900, 40,00 ₽")]
-        [TestCase("B", ExpectedResult = "Book record: Jon Skeet, C# in Depth, 2019")]
+        [TestCase("G", ExpectedResult = "Book record: Jon Skeet, C# in Depth, 2019, Manning")]
         public string ToString_FormatsWithoutCultureInfo(string format)
             => book.ToString(format);
+
+        [TestCase("{0:F}", ExpectedResult = "Book record: Jon Skeet, C# in Depth, 2019, Manning, ed.4, p.900, $40.00")]
+        public string ToString_FormatsWithCultureInfo_EnUS(string format)
+        {
+            return string.Format(new CultureInfo("en-US"), format, book);
+        }
+
+        [Test]
+        public void ToString_NotCorrectFormat_FormatException()
+            => Assert.Throws<FormatException>(() => string.Format("{0:W}", book));
     }
-    //- Book record: Jon Skeet, C# in Depth, 2019, "Manning", 
-    //- Book record: Jon Skeet, C# in Depth, 2019
-    //- Book record: Jon Skeet, C# in Depth
-    //- Book record: C# in Depth, 2019, "Manning"
-    //- Book record: C# in Depth и т.д.
 }
