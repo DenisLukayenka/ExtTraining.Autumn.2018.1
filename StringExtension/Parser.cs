@@ -14,8 +14,8 @@ namespace StringExtension
         public static int ToDecimal(this string source, int @base)
         {
             CheckArguments(source, @base);
-
-            int lenght = source.Length - 1;
+            
+            int powOfNumber = (int)Math.Pow(@base, source.Length - 1);
             int answer = 0;
 
             foreach (var symbol in source.ToUpper())
@@ -26,9 +26,9 @@ namespace StringExtension
                 }
 
                 int numberOfSymbol = _possibleSymbols.IndexOf(symbol);
-                int tempNumber = numberOfSymbol * (int)Math.Pow(@base, lenght--);
+                answer += numberOfSymbol * powOfNumber;
 
-                answer += tempNumber;
+                powOfNumber /= @base;
             }
 
             return answer;
@@ -62,7 +62,7 @@ namespace StringExtension
             bool flag = false;
             foreach (var symbol in source.ToUpper())
             {
-                if (!IsCurrectSymbol(symbol, @base))
+                if (!IsCorrectSymbol(symbol, @base))
                 {
                     flag = true;
                     break;
@@ -72,19 +72,16 @@ namespace StringExtension
             return flag;
         }
 
-        private static bool IsCurrectSymbol(char symbol, int index)
-        {  
-            bool flag = false;
-            for (int i = 0; i < index; i++)
+        private static bool IsCorrectSymbol(char symbol, int index)
+        {
+            int indexOfSymbol = _possibleSymbols.IndexOf(symbol);
+
+            if (indexOfSymbol == -1 || indexOfSymbol >= index)
             {
-                if (symbol == _possibleSymbols[i])
-                {
-                    flag = true;
-                    break;
-                }
+                return false;
             }
 
-            return flag;
+            return true;
         }
     }
 }
