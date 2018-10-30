@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -14,24 +15,43 @@ namespace StringExtension
         public static int ToDecimal(this string source, int @base)
         {
             CheckArguments(source, @base);
-            
-            int powOfNumber = (int)Math.Pow(@base, source.Length - 1);
-            int answer = 0;
 
-            foreach (var symbol in source.ToUpper())
+            string currentPossibleSymbols = _possibleSymbols.Substring(0, @base);
+
+            return FindDecimalValue(source.ToUpper(CultureInfo.InvariantCulture), currentPossibleSymbols, @base);
+        }
+
+        private static int FindDecimalValue(string source, string currentPossibleSymbols, int @base)
+        {
+            long powOfNumber = 1;
+            int decimalValue = 0;
+
+            for (int i = source.Length - 1; i >= 0; i--)
             {
-                if (answer < 0)
+                int numberOfSymbol = currentPossibleSymbols.IndexOf(source[i]);
+
+                if (numberOfSymbol == -1)
                 {
-                    throw new ArgumentException();
+                    throw new ArgumentException(nameof(source) + " incorrect string representation.");
                 }
 
-                int numberOfSymbol = _possibleSymbols.IndexOf(symbol);
-                answer += numberOfSymbol * powOfNumber;
+                try
+                {
+                    checked
+                    {
+                        decimalValue += numberOfSymbol * (int)powOfNumber;
+                    }
 
-                powOfNumber /= @base;
+                    powOfNumber *= @base;
+                }
+                catch (OverflowException e)
+                {
+                    throw new ArgumentException(nameof(source) + " incorrect string representation.\n" +
+                                                e.InnerException);
+                }
             }
 
-            return answer;
+            return decimalValue;
         }
 
         private static void CheckArguments(string source, int @base)
@@ -50,38 +70,6 @@ namespace StringExtension
             {
                 throw new ArgumentOutOfRangeException(nameof(@base) + " can't be less than 2.");
             }
-
-            if (HaveBadSymbols(source, @base))
-            {
-                throw new ArgumentException(nameof(source) + " bad string value.");
-            }
-        }
-
-        private static bool HaveBadSymbols(string source, int @base)
-        {
-            bool flag = false;
-            foreach (var symbol in source.ToUpper())
-            {
-                if (!IsCorrectSymbol(symbol, @base))
-                {
-                    flag = true;
-                    break;
-                }
-            }
-
-            return flag;
-        }
-
-        private static bool IsCorrectSymbol(char symbol, int index)
-        {
-            int indexOfSymbol = _possibleSymbols.IndexOf(symbol);
-
-            if (indexOfSymbol == -1 || indexOfSymbol >= index)
-            {
-                return false;
-            }
-
-            return true;
         }
     }
 }
