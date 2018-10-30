@@ -39,6 +39,97 @@ namespace BookLibrary.Tests
         }
 
         [Test]
+        public void Equal_TwoSameBooks_True()
+        {
+            Assert.IsTrue(book.Equals(book));
+        }
+
+        [Test]
+        public void Equal_BookAndNll_False()
+        {
+            Assert.IsFalse(book.Equals(null));
+        }
+
+        [Test]
+        public void Equal_TwoDifferentBooks_True()
+        {
+            Book book2 = new Book()
+            {
+                Title = "C# in Depth",
+                Author = "Jon Skeet",
+                Year = 2019,
+                PublishingHouse = "Manning",
+                Edition = 4,
+                Pages = 900,
+                Price = 40
+            };
+
+            bool actualResult = book.Equals(book2);
+            Assert.IsTrue(actualResult);
+        }
+
+        [Test]
+        public void Equal_TwoDifferentBooks_False()
+        {
+            Book book2 = new Book()
+            {
+                Title = null,
+                Author = "Jon Skeet",
+                Year = 2019,
+                PublishingHouse = "Manning",
+                Edition = 4,
+                Pages = 900,
+                Price = 40
+            };
+            bool actualResult = book.Equals(book2);
+            Assert.IsFalse(actualResult);
+        }
+
+        [Test]
+        public void CompareTo_TwoDifferentBooks_Zero()
+        {
+            int actualResult = book.CompareTo(book);
+            int expectedResult = 0;
+            Assert.AreEqual(expectedResult, actualResult);
+        }
+
+        [Test]
+        public void CompareTo_TwoDifferentBooks_One()
+        {
+            Book book2 = new Book()
+            {
+                Title = null,
+                Author = "Jon Skeet",
+                Year = 2019,
+                PublishingHouse = "Manning",
+                Edition = 4,
+                Pages = 900,
+                Price = 35
+            };
+            int actualResult = book.CompareTo(book2);
+            int expectedResult = 1;
+            Assert.GreaterOrEqual(actualResult, expectedResult);
+        }
+
+        [Test]
+        public void CompareTo_TwoDifferentBooks_MinusOne()
+        {
+            Book book2 = new Book()
+            {
+                Title = null,
+                Author = "Jon Skeet",
+                Year = 2019,
+                PublishingHouse = "Manning",
+                Edition = 4,
+                Pages = 900,
+                Price = 45
+            };
+            int actualResult = book.CompareTo(book2);
+            int expectedResult = -1;
+            Assert.LessOrEqual(actualResult, expectedResult);
+        }
+
+        [Test]
         public void ToString_NotCorrectFormat_FormatException()
             => Assert.Throws<FormatException>(() => string.Format("{0:W}", book));
     }

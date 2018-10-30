@@ -10,7 +10,7 @@ namespace BookLibrary
     /// <summary>
     /// Model of book.
     /// </summary>
-    public class Book : IFormattable
+    public class Book : IFormattable, IEquatable<Book>, IComparable<Book>
     {
         /// <summary>
         /// Simple auto properties for parameters of book.
@@ -28,6 +28,64 @@ namespace BookLibrary
         public int Pages { get; set; }
 
         public decimal Price { get; set; }
+
+        public int CompareTo(Book other)
+        {
+            if (ReferenceEquals(this, other))
+            {
+                return 0;
+            }
+
+            if (ReferenceEquals(other, null))
+            {
+                throw new ArgumentNullException(nameof(other) + " should be not null.");
+            }
+
+            return (int)(this.Price - other.Price);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(obj, null))
+            {
+                return false;
+            }
+
+            Book book = obj as Book;
+
+            return this.Equals(book);
+        }
+
+        public bool Equals(Book other)
+        {
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(other, null))
+            {
+                return false;
+            }
+
+            if (other.Title == this.Title
+                && other.Author == this.Author
+                && other.Edition == this.Edition
+                && other.Pages == this.Pages
+                && other.Price == this.Price
+                && other.Year == this.Year
+                && other.PublishingHouse == this.PublishingHouse)
+            {
+                return true;
+            }
+
+            return false;
+        }
 
         /// <summary>
         /// Overriden method ToString();
@@ -72,7 +130,8 @@ namespace BookLibrary
                 case "E":
                     return $"Book record: {Title}, {PublishingHouse}";
                 case "F":
-                    return $"Book record: {Author}, {Title}, {Year}, {PublishingHouse}, ed.{Edition}, p.{Pages}, {Price.ToString("C2", formatProvider)}";
+                    return
+                        $"Book record: {Author}, {Title}, {Year}, {PublishingHouse}, ed.{Edition}, p.{Pages}, {Price.ToString("C2", formatProvider)}";
 
                 default:
                     throw new FormatException(nameof(format) + " is invalid format.");
